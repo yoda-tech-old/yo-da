@@ -1,0 +1,9 @@
+<div class="jumbotron">
+  <h1>Yo-Da</h1>
+  <p class="lead">Take back control of your data</p>
+  {{#if user}}
+    <p>Welcome {{user}}!</p>
+  {{else}}
+    <a class="btn btn-primary btn-large" href="{{signInUrl}}">Login with hotmail</a>
+  {{/if}}
+</div>
