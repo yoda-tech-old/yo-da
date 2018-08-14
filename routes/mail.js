@@ -23,36 +23,19 @@ router.get('/', async function(req, res, next) {
       // Get the 20 newest messages from inbox
       const result = await client
       .api('/me/mailfolders/inbox/messages')
-      .top(20)
+      .top(200)
       .select('subject,from,receivedDateTime,isRead,body')
       .orderby('receivedDateTime DESC')
       .get();
 
-      keys = Object.keys(result);
-
-      // result is an object
-
-      //const keys = result.keys()
 
 
-      //const listResults = result.map(a => a.toUpperCase())
-
-// add filtering functions here
-      //const filteredResult = result.value.body.text()
-
-
-
-
-
-
-
-/// end of filtering functions
 
       parms.user = userName;
       //parms.messages.body = filteredResult;
 
       parms.messages = result.value;
-      parms.keys = keys
+
       //parms.keys = keys
 
 

@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
 var authHelper = require('../helpers/auth');
-var handlebar = require('../helpers/helpers')
 
 /* GET home page. */
 router.get('/', async function(req, res, next) {

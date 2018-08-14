@@ -7,14 +7,18 @@ require('dotenv').config();
 var indexRouter = require('./routes/index');
 var authorize = require('./routes/authorize');
 var mail = require('./routes/mail');
-var hbs = require('express-handlebars');
+var exphbs = require('express-handlebars');
+var hbsHelpers = exphbs.create({
+    helpers: require("./helpers/helpers.js").helpers,
+    defaultLayout: 'layout',
+    layoutsDir: __dirname + '/views/',
+    extname: '.hbs'
+});
 
 var app = express();
-
-// view engine setup
-app.engine('hbs', hbs({extname: 'hbs', defaultLayout: 'layout', layoutsDir: __dirname + '/views/'}))
+app.engine('.hbs', hbsHelpers.engine);
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'hbs');
+app.set('view engine', '.hbs');
 
 app.use(logger('dev'));
 app.use(express.json());
