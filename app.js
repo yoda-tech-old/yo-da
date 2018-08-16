@@ -8,11 +8,12 @@ var indexRouter = require('./routes/index');
 var authorize = require('./routes/authorize');
 var mail = require('./routes/mail');
 var exphbs = require('express-handlebars');
+
 var hbsHelpers = exphbs.create({
-    helpers: require("./helpers/helpers.js").helpers,
-    defaultLayout: 'layout',
-    layoutsDir: __dirname + '/views/',
-    extname: '.hbs'
+  helpers: require("./helpers/handlebars.js").helpers,
+  defaultLayout: 'layout',
+  layoutsDir: __dirname + '/views/',
+  extname: '.hbs'
 });
 
 var app = express();
@@ -22,7 +23,9 @@ app.set('view engine', '.hbs');
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({
+  extended: false
+}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 

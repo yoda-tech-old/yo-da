@@ -1,7 +1,9 @@
 var express = require('express');
 var router = express.Router();
 var authHelper = require('../helpers/auth');
-var graph = require('@microsoft/microsoft-graph-client');
+var processingFunctions = require('../helpers/helpers');
+var MicrosoftGraph = require('@microsoft/microsoft-graph-client');
+const getDomainNames = require('../helpers/getDomainNames')
 
 /* GET /mail */
 router.get('/', async function(req, res, next) {
@@ -13,31 +15,24 @@ router.get('/', async function(req, res, next) {
   if (accessToken && userName) {
 
     // Initialize Graph client
-    const client = graph.Client.init({
+    const client = MicrosoftGraph.Client.init({
       authProvider: (done) => {
         done(null, accessToken);
       }
     });
 
     try {
-      // Get the 20 newest messages from inbox
+      // Get the newest messages from inbox
       const result = await client
       .api('/me/mailfolders/inbox/messages')
-      .top(200)
-      .select('subject,from,receivedDateTime,isRead,body')
-      .orderby('receivedDateTime DESC')
+      .query("$search=unsubscribe")
+      .select('subject,from,receivedDateTime,isRead')
+      .top(1000)
       .get();
 
-
-
-
       parms.user = userName;
-      //parms.messages.body = filteredResult;
 
-      parms.messages = result.value;
-
-      //parms.keys = keys
-
+      parms.messages = getDomainNames(result.value)
 
       res.render('mail', parms);
 
@@ -53,4 +48,6 @@ router.get('/', async function(req, res, next) {
     res.redirect('/');
   }
 });
+
+
 module.exports = router;
