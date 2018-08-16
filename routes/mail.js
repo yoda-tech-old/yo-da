@@ -5,49 +5,46 @@ var processingFunctions = require('../helpers/helpers');
 var MicrosoftGraph = require('@microsoft/microsoft-graph-client');
 const getDomainNames = require('../helpers/getDomainNames')
 
-/* GET /mail */
-router.get('/', async function(req, res, next) {
-  let parms = { title: 'Inbox', active: { inbox: true } };
+const getClient = (accessToken) => {
+  const client = MicrosoftGraph.Client.init({
+    authProvider: (done) => {
+      done(null, accessToken);
+    }
+  });
+  return client
+}
 
+const renderHtmlPage = (res, parms) => {
+  res.render('mail', parms);
+}
+
+const handleError = (res, err) => {
+  const message = 'Error retrieving messages';
+  const error = { status: `${err.code}: ${err.message}` };
+  const debug = JSON.stringify(err.body, null, 2);
+  const parms = { message, error, debug }
+  res.render('error', parms);
+}
+
+const handler = async function(req, res, next) {
+  // If credentials not provided then redirect to homepage
   const accessToken = await authHelper.getAccessToken(req.cookies, res);
   const userName = req.cookies.graph_user_name;
-
-  if (accessToken && userName) {
-
-    // Initialize Graph client
-    const client = MicrosoftGraph.Client.init({
-      authProvider: (done) => {
-        done(null, accessToken);
-      }
-    });
-
-    try {
-      // Get the newest messages from inbox
-      const result = await client
-      .api('/me/mailfolders/inbox/messages')
-      .query("$search=unsubscribe")
-      .select('subject,from,receivedDateTime,isRead')
-      .top(1000)
-      .get();
-
-      parms.user = userName;
-
-      parms.messages = getDomainNames(result.value)
-
-      res.render('mail', parms);
-
-    } catch (err) {
-      parms.message = 'Error retrieving messages';
-      parms.error = { status: `${err.code}: ${err.message}` };
-      parms.debug = JSON.stringify(err.body, null, 2);
-      res.render('error', parms);
-    }
-
-  } else {
-    // Redirect to home
+  if (!accessToken && !userName) {
     res.redirect('/');
   }
-});
 
+  try {
+    const client = getClient(accessToken)
+    const endpoint = '/me/mailfolders/inbox/messages'
+    const domainNames = await getDomainNames(client, endpoint)
+    const parms = { domainNames, userName }
+    renderHtmlPage(res, parms)
+  } catch (err) {
+    handleError(res, err)
+  }
+}
+
+router.get('/', handler);
 
 module.exports = router;

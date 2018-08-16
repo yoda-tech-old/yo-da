@@ -29,9 +29,29 @@ app.use(express.urlencoded({
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/authorize', authorize);
+app.post('/mail/upload', (err, req, res, next) => {
+  var template_params = {
+     "to_email": "edoardo.paluan@hotmail.com",
+     "from_email": "edoardo.paluan@hotmail.com",
+     "replyto_email": "esp@yo-da.co",
+     "cc_email": "esp@yo-da.co",
+     "bcc_email": "edoardo.paluan@yo-da.co",
+     "body": "yo everybody this is agdpr request",
+     "message_html": "what the hell is this?"
+  }
+  var service_id = "default_service";
+  var template_id = "inquiry_form";
+  emailjs.send(service_id,template_id,template_params);
+})
+
 app.use('/mail', mail);
+
+app.use('/authorize', authorize);
+
+app.use('/', indexRouter);
+
+
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

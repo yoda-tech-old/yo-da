@@ -7,9 +7,8 @@
 
   </thead>
   <tbody>
-
-    {{#each messages}}
-      <tr class="{{#unless this.isRead}}table-primary{{/unless}}">
+    {{#each domainNames}}
+      <tr>
         <td>{{this}}</td>
       </tr>
     {{/each}}
