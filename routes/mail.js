@@ -46,5 +46,4 @@ const handler = async function(req, res, next) {
 }
 
 router.get('/', handler);
-
 module.exports = router;

@@ -1,13 +1,15 @@
 const getDomainNames = async (client, endpoint) => {
   const domains = {}
+  const query = "$search=unsubscribe"
   let url = endpoint
   while(url) {
     const result = await client
       .api(url)
-      .query("$search=unsubscribe")
+      // .query(query)
       .select('from')
       .top(1000)
       .get();
+
     const reducer = (accumulater, value) => {
       if (!value || !value.from) {
         return accumulater
