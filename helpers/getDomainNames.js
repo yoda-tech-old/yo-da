@@ -1,8 +1,8 @@
 const getDomainNames = async (client, endpoint) => {
   const domains = {}
-  const query = "$search=unsubscribe"
+  // const query = "$search=unsubscribe"
   let url = endpoint
-  while(url) {
+  while (url) {
     const result = await client
       .api(url)
       // .query(query)
@@ -14,7 +14,8 @@ const getDomainNames = async (client, endpoint) => {
       if (!value || !value.from) {
         return accumulater
       }
-      const { address } = value.from.emailAddress
+
+      const address = value.from.emailAddress.address
       if (!address) {
         return accumulater
       }
@@ -22,6 +23,8 @@ const getDomainNames = async (client, endpoint) => {
       if (!domain) {
         return accumulater
       }
+
+      
 
       const domainName = domain.toLowerCase()
       accumulater[domainName] = domainName

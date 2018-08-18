@@ -1,25 +1,29 @@
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
 
 require('dotenv').config();
-var indexRouter = require('./routes/index');
-var authorize = require('./routes/authorize');
-var mail = require('./routes/mail');
-var exphbs = require('express-handlebars');
+const indexRouter = require('./routes/index');
+const authorize = require('./routes/authorize');
+const mail = require('./routes/mail');
+const exphbs = require('express-handlebars');
+const nodemailer = require('nodemailer');
+var createError = require('createerror');
 
-var hbsHelpers = exphbs.create({
+const hbsHelpers = exphbs.create({
   helpers: require("./helpers/handlebars.js").helpers,
   defaultLayout: 'layout',
   layoutsDir: __dirname + '/views/',
   extname: '.hbs'
 });
 
-var app = express();
+const app = express();
 app.engine('.hbs', hbsHelpers.engine);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', '.hbs');
+
+
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -27,28 +31,65 @@ app.use(express.urlencoded({
   extended: false
 }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use('/public', express.static(path.join(__dirname, 'public')));
+app.get('/contact', (req,res) => {
+  res.render('contact')
 
-app.post('/mail/upload', (err, req, res, next) => {
-  var template_params = {
-     "to_email": "edoardo.paluan@hotmail.com",
-     "from_email": "edoardo.paluan@hotmail.com",
-     "replyto_email": "esp@yo-da.co",
-     "cc_email": "esp@yo-da.co",
-     "bcc_email": "edoardo.paluan@yo-da.co",
-     "body": "yo everybody this is agdpr request",
-     "message_html": "what the hell is this?"
-  }
-  var service_id = "default_service";
-  var template_id = "inquiry_form";
-  emailjs.send(service_id,template_id,template_params);
 })
 
+
 app.use('/mail', mail);
-
+// app.use('/mail/upload', upload);
 app.use('/authorize', authorize);
-
 app.use('/', indexRouter);
+
+app.post('/send', (req,res) => {
+  const output = 
+  `<p>You have a new contact request</p>
+  <h3> Contact Details </h3>
+  <ul>
+    <li>Email:${req.body.email} </li>
+  </ul>
+  <h3> Message</h3>
+  <p><${req.body.message}/p>
+  `;
+
+
+  let transporter = nodemailer.createTransport({
+    host: 'mail.google.com',
+    port: 587,
+    secure: false, // true for 465, false for other ports
+    auth: {
+        user: process.env.REQUEST_EMAIL, // generated ethereal user
+        pass: process.env.EMAIL_PSWRD, // generated ethereal password
+    },
+    tls: {
+      rejectUnauthorized:false
+    }
+});
+
+// setup email data with unicode symbols
+let mailOptions = {
+    from: '"Yo-Da 👻" <foo@example.com>', // sender address
+    to: 'edoardo.paluan@hotmail.com, edoardo.paluan@hotmail.com', // list of receivers
+    subject: 'Hello ✔', // Subject line
+    text: 'Hello world?', // plain text body
+    html: '<b>Hello world?</b>' // html body
+};
+
+// send mail with defined transport object
+transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+        return console.log(error);
+    }
+    console.log('Message sent: %s', info.messageId);
+    console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+
+    res.render('contact', {msg: 'Email has been sent!'})
+
+})
+});
+
 
 
 
