@@ -8,11 +8,8 @@ const indexRouter = require('./routes');
 const authorize = require('./routes/authorize');
 const mail = require('./routes/mail');
 const getViewEngine = require('./middleware/getViewEngine')
-const {
-    passport,
-    authenticator,
-    callback    
-} = require('./middleware/getPassportHelpers')
+const getPassportHelpers = require('./middleware/getPassportHelpers')
+const { passport, authenticator, callback } = getPassportHelpers
 
 const app = express();
 
