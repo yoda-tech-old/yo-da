@@ -45,7 +45,7 @@ passport.use(new GoogleStrategy({
         clientID: GOOGLE_CLIENT_ID,
         clientSecret: GOOGLE_CLIENT_SECRET,
 
-        callbackURL: "https://quiet-savannah-59105.herokuapp.com/",
+        callbackURL: "https://quiet-savannah-59105.herokuapp.com",
         passReqToCallback: true
     },
     function (request, accessToken, refreshToken, profile, done) {
