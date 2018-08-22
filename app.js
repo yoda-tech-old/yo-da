@@ -4,7 +4,8 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 
-const indexRouter = require('./routes');
+const indexRoute = require('./routes/index');
+const loginRoute = require('./routes/login');
 const authorize = require('./routes/authorize');
 const mail = require('./routes/mail');
 const getViewEngine = require('./middleware/getViewEngine')
@@ -33,6 +34,7 @@ app.get('/auth/google/callback', callback);
 app.get('/contact', (req, res) => res.render('contact'))
 app.use('/mail', mail);
 app.use('/authorize', authorize);
-app.use('/', indexRouter);
+app.use('/login', loginRoute);
+app.use('/', indexRoute);
 
 module.exports = app;
