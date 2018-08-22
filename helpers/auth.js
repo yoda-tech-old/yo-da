@@ -14,7 +14,7 @@ const jwt = require('jsonwebtoken');
 
 function getAuthUrl() {
   const returnVal = oauth2.authorizationCode.authorizeURL({
-    redirect_uri: process.env.REDIRECT_URI,
+    redirect_uri: process.env.CALL_BACK_URL,
     scope: process.env.APP_SCOPES
   });
   console.log(`Generated auth url: ${returnVal}`);
@@ -24,7 +24,7 @@ function getAuthUrl() {
 async function getTokenFromCode(auth_code, res) {
   let result = await oauth2.authorizationCode.getToken({
     code: auth_code,
-    redirect_uri: process.env.REDIRECT_URI,
+    redirect_uri: process.env.CALL_BACK_URL,
     scope: process.env.APP_SCOPES
   });
 
