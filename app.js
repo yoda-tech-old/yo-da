@@ -8,8 +8,8 @@ const indexRouter = require('./routes');
 const authorize = require('./routes/authorize');
 const mail = require('./routes/mail');
 const getViewEngine = require('./middleware/getViewEngine')
-const getPassportHelpers = require('./middleware/getPassportHelpers')
-const { passport, authenticator, callback } = getPassportHelpers
+// const getPassportHelpers = require('./middleware/getPassportHelpers')
+// const { passport, authenticator, callback } = getPassportHelpers
 
 const app = express();
 
@@ -25,10 +25,10 @@ app.use(express.urlencoded({
 }));
 app.use(cookieParser());
 
-app.use(passport.initialize());
-app.use(passport.session());
-app.get('/auth/google', authenticator);
-app.get('/auth/google/callback', callback);
+// app.use(passport.initialize());
+// app.use(passport.session());
+// app.get('/auth/google', authenticator);
+// app.get('/auth/google/callback', callback);
 
 app.get('/contact', (req, res) => res.render('contact'))
 app.use('/mail', mail);
