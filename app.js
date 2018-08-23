@@ -25,6 +25,20 @@ app.use(express.urlencoded({
 }));
 app.use(cookieParser());
 
+
+app.get('/account', ensureAuthenticated, function(req, res){
+    res.render('account', { user: req.user });
+  });
+
+  function ensureAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) { return next(); }
+    res.redirect('/');
+  }
+
+
+
+
+
 app.use(passport.initialize());
 app.use(passport.session());
 app.get('/auth/google', authenticator);
