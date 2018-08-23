@@ -4,7 +4,7 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 
-const indexRouter = require('./routes');
+const indexRoute = require('./routes');
 const authorize = require('./routes/authorize');
 const mail = require('./routes/mail');
 const getViewEngine = require('./middleware/getViewEngine')
@@ -26,17 +26,7 @@ app.use(express.urlencoded({
 app.use(cookieParser());
 
 
-app.get('/account', ensureAuthenticated, function(req, res){
-    res.render('account', { user: req.user });
-  });
-
-  function ensureAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) { return next(); }
-    res.redirect('/');
-  }
-
-
-
+  
 
 
 app.use(passport.initialize());
@@ -44,9 +34,13 @@ app.use(passport.session());
 app.get('/auth/google', authenticator);
 app.get('/auth/google/callback', callback);
 
-app.get('/contact', (req, res) => res.render('contact'))
-app.use('/mail', mail);
+app.get('/contact', (req, res) => (res.render('contact'), {user: req.user}))
+app.get('/mail', (req, res) => (res.render('mail'), {user: req.user}))
+app.get('/', (req, res) => (res.render('index'), {user: req.user}))
+
+
+//app.use('/mail', mail);
 app.use('/authorize', authorize);
-app.use('/', indexRouter);
+//app.use('/', indexRoute);
 
 module.exports = app;

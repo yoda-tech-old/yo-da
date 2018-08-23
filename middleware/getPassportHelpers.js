@@ -15,7 +15,9 @@ const googleStrategy = new GoogleStrategy({
         callbackURL: process.env.CALL_BACK_URL,
         passReqToCallback: true
     },
-    function (request, accessToken, refreshToken, profile, done) {
+     (request, accessToken, refreshToken, profile, done) => {
+         console.log('passport callback function fired for Google')
+         console.log(profile)
         process.nextTick(function () {
             return done(null, profile);
         });
@@ -35,8 +37,6 @@ const callback = passport.authenticate('google', {
     successRedirect: '/contact',
     failureRedirect: '/contact'
 })
-
-
 
 module.exports = {
     passport,
