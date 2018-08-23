@@ -32,7 +32,7 @@ const authenticator = passport.authenticate('google', {
 })
 
 const callback = passport.authenticate('google', {
-    successRedirect: '/',
+    successRedirect: '/mail',
     failureRedirect: '/'
 })
 
