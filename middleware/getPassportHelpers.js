@@ -33,8 +33,7 @@ const authenticator = passport.authenticate('google', {
 
 const callback = passport.authenticate('google', {
     successRedirect: '/',
-    failureRedirect: '/login',
-    failureFlash: true
+    failureRedirect: '/'
 })
 
 module.exports = {

@@ -4,13 +4,12 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 
-const indexRoute = require('./routes/index');
-const loginRoute = require('./routes/login');
+const indexRouter = require('./routes');
 const authorize = require('./routes/authorize');
 const mail = require('./routes/mail');
 const getViewEngine = require('./middleware/getViewEngine')
-const getPassportHelpers = require('./middleware/getPassportHelpers')
-const { passport, authenticator, callback } = getPassportHelpers
+// const getPassportHelpers = require('./middleware/getPassportHelpers')
+// const { passport, authenticator, callback } = getPassportHelpers
 
 const app = express();
 
@@ -26,15 +25,14 @@ app.use(express.urlencoded({
 }));
 app.use(cookieParser());
 
-app.use(passport.initialize());
-app.use(passport.session());
-app.get('/auth/google', authenticator);
-app.get('/auth/google/callback', callback);
+// app.use(passport.initialize());
+// app.use(passport.session());
+// app.get('/auth/google', authenticator);
+// app.get('/auth/google/callback', callback);
 
 app.get('/contact', (req, res) => res.render('contact'))
 app.use('/mail', mail);
 app.use('/authorize', authorize);
-app.use('/login', loginRoute);
-app.use('/', indexRoute);
+app.use('/', indexRouter);
 
 module.exports = app;
