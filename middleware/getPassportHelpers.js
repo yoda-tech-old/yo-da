@@ -39,5 +39,5 @@ const callback = passport.authenticate('google', {
 module.exports = {
     passport,
     authenticator,
-    callback
+    callback,
 }
