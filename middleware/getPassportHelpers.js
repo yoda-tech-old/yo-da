@@ -1,6 +1,10 @@
 const passport = require('passport')
 const GoogleStrategy = require('passport-google-oauth2').Strategy;
 
+
+
+
+
 passport.serializeUser(function (user, done) {
     done(null, user);
 });
@@ -36,8 +40,10 @@ const callback = passport.authenticate('google', {
     failureRedirect: '/'
 })
 
+
+
 module.exports = {
     passport,
     authenticator,
-    callback,
+    callback
 }
