@@ -1,10 +1,6 @@
 const passport = require('passport')
 const GoogleStrategy = require('passport-google-oauth2').Strategy;
 
-
-
-
-
 passport.serializeUser(function (user, done) {
     done(null, user);
 });
@@ -36,7 +32,7 @@ const authenticator = passport.authenticate('google', {
 })
 
 const callback = passport.authenticate('google', {
-    successRedirect: '/mail',
+    successRedirect: '/contact',
     failureRedirect: '/contact'
 })
 
