@@ -9,7 +9,7 @@ const authorize = require('./routes/authorize');
 const mail = require('./routes/mail');
 const getViewEngine = require('./middleware/getViewEngine')
 const getPassportHelpers = require('./middleware/getPassportHelpers')
-const { passport, authenticator, callback } = getPassportHelpers
+const { passport, googleAuthenticator, googleCallback, microsoftCallback, microsoftAuthenticator } = getPassportHelpers
 
 const app = express();
 
@@ -25,22 +25,30 @@ app.use(express.urlencoded({
 }));
 app.use(cookieParser());
 
-
-  
-
-
 app.use(passport.initialize());
 app.use(passport.session());
-app.get('/auth/google', authenticator);
-app.get('/auth/google/callback', callback);
+
+app.get('/auth/google', googleAuthenticator);
+app.get('/auth/microsoft', microsoftAuthenticator);
+app.get('/auth/google/callback', googleCallback);
+app.get('/auth/microsoft/callback', microsoftCallback);
 
 app.get('/contact', (req, res) => (res.render('contact'), {user: req.user}))
-app.get('/mail', (req, res) => (res.render('mail'), {user: req.user}))
+app.get('/mail', ensureAuthenticated, (req, res) => (res.render('mail'), {user: req.user}))
 app.get('/', (req, res) => (res.render('index'), {user: req.user}))
 
+app.get('/logout', function (req, res) {
+    req.logout();
+    res.redirect('/');
+  });
+
+function ensureAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) { return next(); }
+    res.redirect('/login')
+  }
 
 //app.use('/mail', mail);
 app.use('/authorize', authorize);
-//app.use('/', indexRoute);
+app.use('/', indexRoute);
 
 module.exports = app;
